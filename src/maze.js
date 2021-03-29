@@ -4,8 +4,6 @@ export default class Maze {
     this.width = width;
     this.table = [];
 
-    // this.createMaze();
-
     return this;
   }
 

@@ -1,9 +1,11 @@
 <template>
   <div>
       <table v-if="maze">
-        <tr v-for="(row, x) in maze.table" :key="`row-${x}`">
-          <td v-for="(column, y) in row" :key="`column-${x}-${y}`" :class="column">
-            <span v-if="x === 0 && y === 0">
+        <tr v-for="(row, y) in maze.table" :key="`row-${y}`">
+          <td v-for="(column, x) in row" :key="`column-${y}-${x}`" :class="column">
+            <span v-if="y === 0 && x === 0
+                  || column === currentPosition
+                  || x === maze.height - 1 && y === maze.width - 1">
               <svg viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg" style="z-index:10;">
                 <circle cx="15" cy="15" r="7.5" fill="currentColor"></circle>
               </svg>
@@ -11,16 +13,18 @@
 
             <span v-show="column.active">
               <svg viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
-                <rect v-show="column.right" x="20" y="20" height="10" width="30" fill="currentColor"></rect>
-                <rect v-show="column.left" x="0" y="20" height="10" width="30" fill="currentColor"></rect>
-                <rect v-show="column.top" x="20" y="0" height="30" width="10" fill="currentColor"></rect>
-                <rect v-show="column.bottom" x="20" y="20" height="30" width="10" fill="currentColor"></rect>
-              </svg>
-            </span>
-
-            <span v-if="x === maze.height - 1 && y === maze.width - 1">
-              <svg height="30" width="30" viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg" style="z-index:10;">
-                <circle cx="15" cy="15" r="10" fill="currentColor"></circle>
+                <rect
+                  v-show="column.right && row[x + 1].active"
+                  x="20" y="20" height="10" width="30" fill="currentColor"></rect>
+                <rect
+                  v-show="column.left && row[x - 1].active"
+                  x="0" y="20" height="10" width="30" fill="currentColor"></rect>
+                <rect
+                  v-show="column.top && maze.table[y - 1] && maze.table[y - 1][x].active"
+                  x="20" y="0" height="30" width="10" fill="currentColor"></rect>
+                <rect
+                  v-show="column.bottom && maze.table[y + 1] && maze.table[y + 1][x].active"
+                  x="20" y="20" height="30" width="10" fill="currentColor"></rect>
               </svg>
             </span>
           </td>
@@ -64,7 +68,7 @@ export default {
   },
   methods: {
     startGame() {
-      this.maze = new Maze(10, 10);
+      this.maze = new Maze(8, 8);
       this.maze.createMaze()
         .then(() => {
           this.movePosition(0, 0);
@@ -75,17 +79,26 @@ export default {
       document.removeEventListener('keyup', this.keyboardHandler);
     },
     resetGame() {
-      this.moveNumber = 0;
       this.failure = false;
       this.success = false;
+      this.currentX = 0;
+      this.currentY = 0;
       this.startGame();
     },
     keyboardHandler(event) {
       const actions = {
-        up: () => { if (this.currentPosition.top) this.movePosition(this.currentX, this.currentY - 1); },
-        left: () => { if (this.currentPosition.left) this.movePosition(this.currentX - 1, this.currentY); },
-        down: () => { if (this.currentPosition.bottom) this.movePosition(this.currentX, this.currentY + 1); },
-        right: () => { if (this.currentPosition.right) this.movePosition(this.currentX + 1, this.currentY); },
+        up: () => {
+          if (this.currentPosition.top) this.movePosition(this.currentX, this.currentY - 1);
+        },
+        left: () => {
+          if (this.currentPosition.left) this.movePosition(this.currentX - 1, this.currentY);
+        },
+        down: () => {
+          if (this.currentPosition.bottom) this.movePosition(this.currentX, this.currentY + 1);
+        },
+        right: () => {
+          if (this.currentPosition.right) this.movePosition(this.currentX + 1, this.currentY);
+        },
       };
       const handlers = {
         w: actions.up,
@@ -122,11 +135,13 @@ export default {
 
 <style lang="scss" scoped>
 table {
+  margin:0 auto;
   border-spacing:0;
   border:5px double rgba(255, 255, 0, 0.75);
   background-image: url('../assets/circuit.png');
   background-color: #006600;
   background-size:cover;
+  box-shadow:10px 10px 5px rgba(0,0,0,.8);
 }
 td {
   border:5px double rgba(255, 255, 0, 0.95);
