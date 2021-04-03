@@ -68,7 +68,7 @@ export default {
   },
   methods: {
     startGame() {
-      this.maze = new Maze(8, 8);
+      this.maze = new Maze(9, 9);
       this.maze.createMaze()
         .then(() => {
           this.movePosition(0, 0);

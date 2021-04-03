@@ -1,4 +1,9 @@
 export default class Maze {
+  /**
+   * Construct the maze
+   * @param {number} height
+   * @param {number} width
+   */
   constructor(height = 10, width = 10) {
     this.height = height;
     this.width = width;
@@ -7,6 +12,11 @@ export default class Maze {
     return this;
   }
 
+  /**
+   * Create the maze
+   *
+   * @returns {Promise}
+   */
   createMaze() {
     for (let y = 0; y < this.height; y += 1) {
       const row = [];
@@ -27,6 +37,11 @@ export default class Maze {
     return this.createSolutionPath();
   }
 
+  /**
+   * Create the solution path to the maze
+   *
+   * @returns {Promise}
+   */
   createSolutionPath() {
     let rowIndex = 0;
     let colIndex = 0;
@@ -63,30 +78,29 @@ export default class Maze {
         }
       },
     };
-    let interval = 0;
-    return new Promise((resolve) => {
-      interval = setInterval(() => {
-        const move = validMoves[Math.floor(Math.random() * validMoves.length)];
-        if (this.isDeadEnd(rowIndex, colIndex)) {
-          const newStartPoint = this.findNewStartPoint();
-          rowIndex = newStartPoint.y;
-          colIndex = newStartPoint.x;
-        } else {
-          instructions[move](rowIndex, colIndex);
-        }
-        this.table[rowIndex][colIndex].visited = true;
-        iterationCount += 1;
-        if (rowIndex === this.height - 1 && colIndex === this.width - 1) {
-          maxIterationCount = Math.min(maxIterationCount, iterationCount + (this.width * 50));
-        }
-        if (iterationCount >= maxIterationCount) {
-          clearInterval(interval);
-          resolve();
-        }
-      }, 0);
-    });
+    while (iterationCount < maxIterationCount) {
+      const move = validMoves[Math.floor(Math.random() * validMoves.length)];
+      if (this.isDeadEnd(rowIndex, colIndex)) {
+        const newStartPoint = this.findNewStartPoint();
+        rowIndex = newStartPoint.y;
+        colIndex = newStartPoint.x;
+      } else {
+        instructions[move](rowIndex, colIndex);
+      }
+      this.table[rowIndex][colIndex].visited = true;
+      iterationCount += 1;
+      if (rowIndex === this.height - 1 && colIndex === this.width - 1) {
+        maxIterationCount = Math.min(maxIterationCount, iterationCount + (this.width * 50));
+      }
+    }
+    return Promise.resolve();
   }
 
+  /**
+   * Check if the current position is a dead end
+   *
+   * @returns {boolean}
+   */
   isDeadEnd(row, column) {
     const left = this.table[row][column - 1] && !this.table[row][column - 1].visited;
     const right = this.table[row][column + 1] && !this.table[row][column + 1].visited;
@@ -96,6 +110,11 @@ export default class Maze {
     return !left && !right && !bottom && !top;
   }
 
+  /**
+   * Find a new start point
+   *
+   * @returns {object} point
+   */
   findNewStartPoint() {
     const y = Math.floor(Math.random() * this.height);
     const x = Math.floor(Math.random() * this.width);
