@@ -1,40 +1,41 @@
 <template>
   <div>
-      <table v-if="maze">
-        <tr v-for="(row, y) in maze.table" :key="`row-${y}`">
-          <td v-for="(column, x) in row" :key="`column-${y}-${x}`" :class="column">
-            <span v-if="y === 0 && x === 0
-                  || column === currentPosition
-                  || x === maze.height - 1 && y === maze.width - 1">
-              <svg viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg" style="z-index:10;">
-                <circle cx="15" cy="15" r="7.5" fill="currentColor"></circle>
-              </svg>
-            </span>
+    <h1>Current Level: {{ currentLevel }}</h1>
+    <table v-if="maze">
+      <tr v-for="(row, y) in maze.table" :key="`row-${y}`">
+        <td v-for="(column, x) in row" :key="`column-${y}-${x}`" :class="column">
+          <span v-if="y === 0 && x === 0
+                || column === currentPosition
+                || x === maze.height - 1 && y === maze.width - 1">
+            <svg viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg" style="z-index:10;">
+              <circle cx="15" cy="15" r="7.5" fill="currentColor"></circle>
+            </svg>
+          </span>
 
-            <span v-show="column.active">
-              <svg viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
-                <rect
-                  v-show="column.right && row[x + 1].active"
-                  x="20" y="20" height="10" width="30" fill="currentColor"></rect>
-                <rect
-                  v-show="column.left && row[x - 1].active"
-                  x="0" y="20" height="10" width="30" fill="currentColor"></rect>
-                <rect
-                  v-show="column.top && maze.table[y - 1] && maze.table[y - 1][x].active"
-                  x="20" y="0" height="30" width="10" fill="currentColor"></rect>
-                <rect
-                  v-show="column.bottom && maze.table[y + 1] && maze.table[y + 1][x].active"
-                  x="20" y="20" height="30" width="10" fill="currentColor"></rect>
-              </svg>
-            </span>
-          </td>
-        </tr>
-      </table>
-      <h1 v-if="success">YOU WIN!</h1>
-      <h1 v-if="failure">YOU LOSE!</h1>
-      <button v-if="success || failure" @click="resetGame">
-        Restart
-      </button>
+          <span v-show="column.active">
+            <svg viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
+              <rect
+                v-show="column.right && row[x + 1].active"
+                x="20" y="20" height="10" width="30" fill="currentColor"></rect>
+              <rect
+                v-show="column.left && row[x - 1].active"
+                x="0" y="20" height="10" width="30" fill="currentColor"></rect>
+              <rect
+                v-show="column.top && maze.table[y - 1] && maze.table[y - 1][x].active"
+                x="20" y="0" height="30" width="10" fill="currentColor"></rect>
+              <rect
+                v-show="column.bottom && maze.table[y + 1] && maze.table[y + 1][x].active"
+                x="20" y="20" height="30" width="10" fill="currentColor"></rect>
+            </svg>
+          </span>
+        </td>
+      </tr>
+    </table>
+    <h1 v-if="success">YOU WIN!</h1>
+    <h1 v-if="failure">YOU LOSE!</h1>
+    <button v-if="success || failure" @click="resetGame">
+      {{ resetButtonText }}
+    </button>
   </div>
 </template>
 
@@ -46,6 +47,8 @@ export default {
   data() {
     return {
       maze: null,
+      size: 3,
+      currentLevel: 1,
       currentX: 0,
       currentY: 0,
       success: false,
@@ -59,6 +62,9 @@ export default {
       }
       return null;
     },
+    resetButtonText() {
+      return this.success ? 'Next Level' : 'Try Again';
+    },
   },
   mounted() {
     this.startGame();
@@ -68,7 +74,8 @@ export default {
   },
   methods: {
     startGame() {
-      this.maze = new Maze(9, 9);
+      this.maze = new Maze(this.size, this.size);
+      this.currentLevel = this.size - 2;
       this.maze.createMaze()
         .then(() => {
           this.movePosition(0, 0);
@@ -120,6 +127,7 @@ export default {
       if (this.currentPosition.active) {
         this.endGame();
         this.failure = true;
+        this.size = 3;
       } else {
         this.currentPosition.active = true;
       }
@@ -127,6 +135,7 @@ export default {
       if (this.currentX === (this.maze.width - 1) && this.currentY === (this.maze.height - 1)) {
         this.endGame();
         this.success = true;
+        this.size += 1;
       }
     },
   },
@@ -155,6 +164,7 @@ button {
   border:none;
   border-radius:5px;
   cursor:pointer;
+  margin-top:20px;
 }
 td {
   border:5px double rgba(255, 255, 0, 0.95);
@@ -175,9 +185,6 @@ td {
   }
   &.bottom {
     border-bottom-color:transparent;
-  }
-  &.active {
-    //background-color:red;
   }
 
   svg {
