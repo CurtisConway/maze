@@ -143,6 +143,19 @@ table {
   background-size:cover;
   box-shadow:10px 10px 5px rgba(0,0,0,.8);
 }
+h1 {
+  color: rgba(255, 255, 0, 0.75);
+}
+button {
+  background-color: rgba(255, 255, 0, 0.75);
+  color:#242424;
+  padding:10px 20px;
+  font-size:20px;
+  text-transform:uppercase;
+  border:none;
+  border-radius:5px;
+  cursor:pointer;
+}
 td {
   border:5px double rgba(255, 255, 0, 0.95);
   height:75px;
@@ -150,7 +163,6 @@ td {
   box-sizing:border-box;
   position:relative;
   transition:border .5s ease-in-out;
-  //margin:-1px;
 
   &.left {
     border-left-color:transparent;
