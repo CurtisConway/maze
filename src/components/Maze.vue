@@ -1,9 +1,11 @@
 <template>
   <div>
-    <h1>Current Level: {{ currentLevel }}</h1>
-    <table v-if="maze">
-      <tr v-for="(row, y) in maze.table" :key="`row-${y}`">
-        <td v-for="(column, x) in row" :key="`column-${y}-${x}`" :class="column">
+    <h1>Level {{ currentLevel }}</h1>
+    <div class="container">
+      <div class="square">
+        <table v-if="maze">
+          <tr v-for="(row, y) in maze.table" :key="`row-${y}`">
+            <td v-for="(column, x) in row" :key="`column-${y}-${x}`" :class="column">
           <span v-if="y === 0 && x === 0
                 || column === currentPosition
                 || x === maze.height - 1 && y === maze.width - 1">
@@ -12,7 +14,7 @@
             </svg>
           </span>
 
-          <span v-show="column.active">
+              <span v-show="column.active">
             <svg viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
               <rect
                 v-show="column.right && row[x + 1].active"
@@ -28,9 +30,12 @@
                 x="20" y="20" height="30" width="10" fill="currentColor"></rect>
             </svg>
           </span>
-        </td>
-      </tr>
-    </table>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
     <h1 v-if="success">YOU WIN!</h1>
     <h1 v-if="failure">YOU LOSE!</h1>
     <button v-if="success || failure" @click="resetGame">
@@ -68,9 +73,10 @@ export default {
   },
   mounted() {
     this.startGame();
+    document.addEventListener('keyup', this.keyboardHandler);
   },
   beforeDestroy() {
-    this.endGame();
+    document.removeEventListener('keyup', this.keyboardHandler);
   },
   methods: {
     startGame() {
@@ -79,11 +85,7 @@ export default {
       this.maze.createMaze()
         .then(() => {
           this.movePosition(0, 0);
-          document.addEventListener('keyup', this.keyboardHandler);
         });
-    },
-    endGame() {
-      document.removeEventListener('keyup', this.keyboardHandler);
     },
     resetGame() {
       this.failure = false;
@@ -106,6 +108,9 @@ export default {
         right: () => {
           if (this.currentPosition.right) this.movePosition(this.currentX + 1, this.currentY);
         },
+        reset: () => {
+          if (this.success || this.failure) this.resetGame();
+        },
       };
       const handlers = {
         w: actions.up,
@@ -116,8 +121,12 @@ export default {
         ArrowLeft: actions.left,
         ArrowDown: actions.down,
         ArrowRight: actions.right,
+        Enter: actions.reset,
+        ' ': actions.reset,
       };
       if (handlers[event.key]) {
+        event.preventDefault();
+        event.stopPropagation();
         handlers[event.key]();
       }
     },
@@ -125,7 +134,6 @@ export default {
       this.currentX = x;
       this.currentY = y;
       if (this.currentPosition.active) {
-        this.endGame();
         this.failure = true;
         this.size = 3;
       } else {
@@ -133,7 +141,6 @@ export default {
       }
 
       if (this.currentX === (this.maze.width - 1) && this.currentY === (this.maze.height - 1)) {
-        this.endGame();
         this.success = true;
         this.size += 1;
       }
@@ -146,14 +153,32 @@ export default {
 table {
   margin:0 auto;
   border-spacing:0;
-  border:5px double rgba(255, 255, 0, 0.75);
+  border:thick double rgba(255, 255, 0, 0.75);
   background-image: url('../assets/circuit.png');
-  background-color: #006600;
+  background-color: black;
   background-size:cover;
   box-shadow:10px 10px 5px rgba(0,0,0,.8);
+  width:100%;
+  height:100%;
+  position:absolute;
+  top:0;
+  left:0;
+}
+.container {
+  width:640px;
+  max-width:100%;
+  margin:0 auto;
+}
+.square {
+  width:100%;
+  height:0;
+  padding-bottom:100%;
+  position:relative;
+  margin:0 auto;
 }
 h1 {
   color: rgba(255, 255, 0, 0.75);
+  text-align: center;
 }
 button {
   background-color: rgba(255, 255, 0, 0.75);
@@ -167,9 +192,7 @@ button {
   margin-top:20px;
 }
 td {
-  border:5px double rgba(255, 255, 0, 0.95);
-  height:75px;
-  width:75px;
+  border:thick double rgba(255, 255, 0, 0.95);
   box-sizing:border-box;
   position:relative;
   transition:border .5s ease-in-out;
