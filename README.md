@@ -1,5 +1,7 @@
 # maze
 
+https://curtisconway.github.io/maze/
+
 ## Project setup
 ```
 yarn install
