@@ -3,7 +3,7 @@ body {
 }
 
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: monospace;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
@@ -81,6 +81,7 @@ h1, label, input {
 
   label, input {
     font-size:16px;
+    font-family:monospace;
   }
 
   input {
@@ -112,6 +113,7 @@ button {
   border-radius:5px;
   cursor:pointer;
   margin:5px;
+  font-family:monospace;
 
   &.btn-sq {
     width:50px;
