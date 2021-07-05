@@ -84,9 +84,6 @@ export default {
   },
   data() {
     return {
-      timeLimitSeconds: this.settings.timeLimitSeconds,
-      totalLevels: this.settings.totalLevels,
-      startingSize: this.settings.startingSize,
       showSettings: false,
     };
   },
@@ -97,7 +94,7 @@ export default {
 
     timeLimitModel: {
       get() {
-        return this.timeLimitSeconds;
+        return this.settings.timeLimitSeconds;
       },
       set(value) {
         this.$emit('updateSetting', { key: 'timeLimitSeconds', value });
@@ -106,7 +103,7 @@ export default {
 
     totalLevelsModel: {
       get() {
-        return this.totalLevels;
+        return this.settings.totalLevels;
       },
       set(value) {
         this.$emit('updateSetting', { key: 'totalLevels', value });
@@ -115,7 +112,7 @@ export default {
 
     startingSizeModel: {
       get() {
-        return this.startingSize;
+        return this.settings.startingSize;
       },
       set(value) {
         this.$emit('updateSetting', { key: 'startingSize', value });
