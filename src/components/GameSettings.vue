@@ -53,7 +53,7 @@
           v-model.number="totalLevelsModel"
           inputmode="numeric"
           min="1"
-          max="1000">
+          max="20">
       </div>
       <div class="row">
         <label for="startingSize">Starting Size</label>
@@ -63,7 +63,7 @@
           v-model.number="startingSizeModel"
           inputmode="numeric"
           min="3"
-          max="1000">
+          max="20">
       </div>
     </div>
   </div>
@@ -96,7 +96,8 @@ export default {
       get() {
         return this.settings.timeLimitSeconds;
       },
-      set(value) {
+      set(val) {
+        const value = Math.max(0, Math.min(val, 1000));
         this.$emit('updateSetting', { key: 'timeLimitSeconds', value });
       },
     },
@@ -105,7 +106,8 @@ export default {
       get() {
         return this.settings.totalLevels;
       },
-      set(value) {
+      set(val) {
+        const value = Math.max(0, Math.min(val, 20));
         this.$emit('updateSetting', { key: 'totalLevels', value });
       },
     },
@@ -114,7 +116,8 @@ export default {
       get() {
         return this.settings.startingSize;
       },
-      set(value) {
+      set(val) {
+        const value = Math.max(3, Math.min(val, 20));
         this.$emit('updateSetting', { key: 'startingSize', value });
       },
     },
