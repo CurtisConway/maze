@@ -1,6 +1,6 @@
 # maze
 
-https://curtisconway.github.io/maze/
+https://main.d404rhtx21wq2.amplifyapp.com/
 
 ## Project setup
 ```
