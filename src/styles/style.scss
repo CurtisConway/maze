@@ -1,0 +1,263 @@
+body {
+  background-color:#242424;
+}
+
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+}
+
+.monospace {
+  font-family:monospace;
+}
+
+table {
+  margin:0 auto;
+  border-spacing:0;
+  border:thick double rgba(255, 255, 0, 0.75);
+  background-image: url('../assets/circuit.png');
+  background-color: black;
+  background-size:cover;
+  box-shadow:10px 10px 5px rgba(0,0,0,.8);
+  width:100%;
+  height:100%;
+  position:absolute;
+  top:0;
+  left:0;
+}
+
+.container {
+  width:640px;
+  max-width:100%;
+  margin:0 auto;
+}
+.square {
+  width:100%;
+  height:0;
+  padding-bottom:100%;
+  position:relative;
+  margin:0 auto;
+}
+
+h1, label, input {
+  color: rgba(255, 255, 0, 0.75);
+  text-align: center;
+}
+
+.settings {
+  position:fixed;
+  top:0;
+  right:0;
+  align-items:flex-start;
+  justify-content: flex-start;
+  text-align:right;
+  max-width:300px;
+  margin:0 auto;
+  padding:20px;
+
+  .box {
+    background:#343434;
+    padding:20px;
+    box-sizing:border-box;
+    border-radius:5px;
+    margin-top:20px;
+    animation-name:fadeIn;
+    animation-duration:.2s;
+    animation-iteration-count:1;
+  }
+
+  .row {
+    align-items:center;
+  }
+
+  label {
+    flex:1;
+    text-align:left;
+    margin-right:20px;
+  }
+
+  label, input {
+    font-size:16px;
+  }
+
+  input {
+    width:50px;
+    height:50px;
+    text-align:center;
+    background:none;
+    border:none;
+    border-bottom:1px solid rgba(255, 255, 0, 0.75);
+    box-shadow:none;
+    outline:none;
+    -moz-appearance: textfield;
+
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+  }
+}
+
+button {
+  background-color: rgba(255, 255, 0, 0.75);
+  color:#242424;
+  padding:10px 20px;
+  font-size:20px;
+  text-transform:uppercase;
+  border:none;
+  border-radius:5px;
+  cursor:pointer;
+  margin:5px;
+
+  &.btn-sq {
+    width:50px;
+    height:50px;
+    padding:0;
+  }
+}
+
+td {
+  border:thick double rgba(255, 255, 0, 0.95);
+  box-sizing:border-box;
+  position:relative;
+  transition:border .5s ease-in-out;
+
+  &.left {
+    border-left-color:transparent;
+  }
+  &.top {
+    border-top-color:transparent;
+  }
+  &.right {
+    border-right-color:transparent;
+  }
+  &.bottom {
+    border-bottom-color:transparent;
+  }
+
+  svg {
+    position:absolute;
+    width:calc(100% + 10px);
+    height:calc(100% + 10px);
+    top:50%;
+    left:50%;
+    transform: translate(-50%, -50%);
+    color:rgba(255, 255, 0, 1);
+    filter: drop-shadow(0 0 5px rgb(229, 167, 10));
+    animation-name: fadeScaleIn;
+    animation-iteration-count: 1;
+    animation-duration: .25s;
+    opacity:1;
+  }
+}
+
+.row {
+  display:flex;
+  flex-direction:row;
+  justify-content:center;
+  align-items:flex-start;
+  flex-wrap:wrap;
+}
+
+.col {
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  flex:1 1 0;
+  padding:10px;
+  min-width:50%;
+  box-sizing:border-box;
+}
+
+.absolute-center {
+  position:absolute;
+  top:0;
+  bottom:0;
+  left:0;
+  right:0;
+}
+
+.blinker {
+  animation-name:blink;
+  animation-duration:1s;
+  animation-iteration-count: infinite;
+}
+
+.timer-bar {
+  position:relative;
+  margin-top:30px;
+  height:10px;
+  border-radius:10px;
+  background-color:rgba(255, 255, 0, .25);
+
+  .timer {
+    position:absolute;
+    top:0;
+    left:0;
+    bottom:0;
+    right:0;
+    border-radius:5px;
+    background-color:rgba(255, 255, 0, 1);
+    transform:scaleX(0);
+    animation-name:scaleXIn;
+    animation-iteration-count: 1;
+    animation-timing-function: linear;
+  }
+}
+
+@media screen and (max-width:640px) {
+  .col {
+    min-width:100%;
+  }
+}
+
+@keyframes blink {
+  0% {
+    opacity:0;
+  }
+
+  50% {
+    opacity:1;
+  }
+
+  100% {
+    opacity:0;
+  }
+}
+
+@keyframes scaleXIn {
+  from {
+    transform:scaleX(1);
+  }
+
+  to {
+    transform:scaleX(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity:.5;
+  }
+
+  to {
+    opacity:1;
+  }
+}
+
+@keyframes fadeScaleIn {
+  from {
+    opacity:.75;
+    transform:translate(-50%, -50%) scale(1.15);
+  }
+
+  to {
+    opacity:1;
+    transform:translate(-50%, -50%) scale(1);
+  }
+}
