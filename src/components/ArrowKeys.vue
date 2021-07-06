@@ -79,8 +79,6 @@ export default {
         ArrowLeft: this.keyboardActions.left,
         ArrowDown: this.keyboardActions.down,
         ArrowRight: this.keyboardActions.right,
-        Enter: this.keyboardActions.reset,
-        ' ': this.keyboardActions.reset,
       };
       if (handlers[event.key]) {
         event.preventDefault();

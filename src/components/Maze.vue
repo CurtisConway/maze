@@ -86,6 +86,10 @@ export default {
     isPlaying() {
       return this.gameState === GAME_STATES.playing;
     },
+
+    atDestination() {
+      return this.currentX === (this.maze.width - 1) && this.currentY === (this.maze.height - 1);
+    },
   },
   methods: {
     startGame() {
@@ -131,7 +135,7 @@ export default {
           this.currentPosition.active = true;
         }
 
-        if (this.currentX === (this.maze.width - 1) && this.currentY === (this.maze.height - 1)) {
+        if (this.atDestination) {
           clearTimeout(this.timerTimeout);
           this.$emit('success');
         }
