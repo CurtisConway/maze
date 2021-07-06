@@ -23,6 +23,11 @@
       :settings="settings"
       @updateSetting="updateSettings"
     />
+
+    <a href="https://gitfront.io/r/user-5087757/ec7d111abb1072299d4ecfdc8c79241971d7ebba/maze/"
+       class="git-link">
+      Download the repo
+    </a>
   </div>
 </template>
 
