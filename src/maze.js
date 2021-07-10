@@ -12,6 +12,14 @@ export default class Maze {
     return this;
   }
 
+  get start() {
+    return this.table[0][0];
+  }
+
+  get end() {
+    return this.table[this.height - 1][this.width - 1];
+  }
+
   /**
    * Create the maze
    *
