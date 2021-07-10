@@ -46,51 +46,52 @@ export default class Maze {
     let rowIndex = 0;
     let colIndex = 0;
     let iterationCount = 0;
-    let maxIterationCount = this.width * 100;
-    const validMoves = ['left', 'top', 'right', 'bottom'];
-    const instructions = {
-      right: (row, column) => {
+    let maxIterationCount = Number.MAX_SAFE_INTEGER;
+    let hasComplete = false;
+    const instructions = [
+      (row, column) => {
         if (this.table[row][column + 1] && !this.table[row][column + 1].visited) {
           this.table[row][column].right = true;
           this.table[row][column + 1].left = true;
           colIndex += 1;
         }
       },
-      bottom: (row, column) => {
+      (row, column) => {
         if (this.table[row + 1] && !this.table[row + 1][column].visited) {
           this.table[row][column].bottom = true;
           this.table[row + 1][column].top = true;
           rowIndex += 1;
         }
       },
-      left: (row, column) => {
+      (row, column) => {
         if (this.table[row][column - 1] && !this.table[row][column - 1].visited) {
           this.table[row][column].left = true;
           this.table[row][column - 1].right = true;
           colIndex -= 1;
         }
       },
-      top: (row, column) => {
+      (row, column) => {
         if (this.table[row - 1] && !this.table[row - 1][column].visited) {
           this.table[row][column].top = true;
           this.table[row - 1][column].bottom = true;
           rowIndex -= 1;
         }
       },
-    };
+    ];
     while (iterationCount < maxIterationCount) {
-      const move = validMoves[Math.floor(Math.random() * validMoves.length)];
+      const move = instructions[Math.floor(Math.random() * instructions.length)];
       if (this.isDeadEnd(rowIndex, colIndex)) {
         const newStartPoint = this.findNewStartPoint();
         rowIndex = newStartPoint.y;
         colIndex = newStartPoint.x;
       } else {
-        instructions[move](rowIndex, colIndex);
+        move(rowIndex, colIndex);
       }
       this.table[rowIndex][colIndex].visited = true;
       iterationCount += 1;
-      if (rowIndex === this.height - 1 && colIndex === this.width - 1) {
-        maxIterationCount = Math.min(maxIterationCount, iterationCount + (this.width * 50));
+      if (rowIndex === this.height - 1 && colIndex === this.width - 1 && !hasComplete) {
+        hasComplete = true;
+        maxIterationCount = iterationCount + (this.width * 50);
       }
     }
     return Promise.resolve();
